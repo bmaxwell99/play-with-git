@@ -11,36 +11,13 @@ Live mode (needs SEATSAERO_API_KEY, and ANTHROPIC_API_KEY for --llm):
 from __future__ import annotations
 
 import argparse
-import os
 import sys
 
-from .aggregator import price_options
-from .clients.seatsaero import SeatsAeroClient
 from .config import load_dotenv, load_watchlist
 from .models import PricedOption, Trip
+from .pipeline import priced_for_trip
 from .ranker import rank_heuristic, rank_with_llm
 from .transfers import TransferTable
-
-
-def _fetch_awards(trip: Trip, args) -> list:
-    if args.fixture:
-        # Dev/offline mode: every trip reads the same recorded response.
-        return SeatsAeroClient.from_fixture(args.fixture)
-
-    api_key = os.environ.get("SEATSAERO_API_KEY", "")
-    client = SeatsAeroClient(api_key)
-    awards = []
-    for cabin in trip.cabins:
-        awards.extend(
-            client.search(
-                origin=trip.origin,
-                destination=trip.destination,
-                start_date=trip.earliest,
-                end_date=trip.latest,
-                cabin=cabin,
-            )
-        )
-    return awards
 
 
 def _report_trip(trip: Trip, options: list[PricedOption], args, balances) -> None:
@@ -94,8 +71,7 @@ def main(argv=None) -> int:
 
     print(f"Balances: {balances}")
     for trip in trips:
-        awards = _fetch_awards(trip, args)
-        options = price_options(awards, balances, table, trip)
+        options = priced_for_trip(trip, balances, table, fixture=args.fixture)
         _report_trip(trip, options, args, balances)
     return 0
 

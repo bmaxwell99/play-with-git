@@ -61,6 +61,37 @@ python -m airpoints.cli --watchlist watchlist.yaml --llm
 Flags: `--ratios` (transfer table path), `--top N` (options per trip),
 `--fixture` (offline JSON), `--llm` (rank with Claude).
 
+## Monitoring (cron)
+
+`airpoints.monitor` runs the same fetch+price pipeline, remembers what it has
+already seen in a small state file, and **alerts only on newly-affordable sweet
+spots** — including price drops (a cheaper award on a route you've seen counts
+as new). Notifiers are pluggable: stdout by default, plus an append file and/or
+a webhook (e.g. Slack/Discord).
+
+```bash
+python -m airpoints.monitor --watchlist watchlist.yaml \
+    --state ~/.airpoints_state.json \
+    --max-miles 90000 \
+    --webhook "$SLACK_WEBHOOK_URL"
+```
+
+Flags: `--state` (seen-set path), `--max-miles N` (ignore pricier options to cut
+noise), `--notify-file PATH`, `--webhook URL`, `--quiet` (suppress stdout),
+`--fixture` (offline demo). The state file is written even if a single route's
+fetch fails, so transient errors don't lose progress.
+
+Run it on a schedule — e.g. every 6 hours via cron:
+
+```cron
+0 */6 * * *  cd /path/to/play-with-git && /usr/bin/python3 -m airpoints.monitor \
+  --watchlist watchlist.yaml --state ~/.airpoints_state.json \
+  --max-miles 90000 --quiet --webhook "$SLACK_WEBHOOK_URL" >> ~/airpoints.log 2>&1
+```
+
+With `--quiet` it stays silent unless there's something new — so a webhook ping
+means a genuinely new sweet spot.
+
 ## Configuration
 
 **`watchlist.yaml`** — your balances and the trips to monitor:
