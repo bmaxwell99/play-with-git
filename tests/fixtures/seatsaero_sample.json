@@ -1,0 +1,88 @@
+{
+  "data": [
+    {
+      "ID": "rec-1",
+      "Route": {
+        "OriginAirport": "SFO",
+        "DestinationAirport": "HND",
+        "Source": "alaska"
+      },
+      "Date": "2026-04-08",
+      "Source": "alaska",
+      "YAvailable": true,
+      "WAvailable": false,
+      "JAvailable": true,
+      "FAvailable": false,
+      "YMileageCost": "30000",
+      "JMileageCost": "75000",
+      "YTaxesFees": "5600",
+      "JTaxesFees": "5600",
+      "TaxesCurrency": "USD",
+      "YAirlines": "JL",
+      "JAirlines": "JL",
+      "YDirect": true,
+      "JDirect": true,
+      "YRemainingSeats": 5,
+      "JRemainingSeats": 2
+    },
+    {
+      "ID": "rec-2",
+      "Route": {
+        "OriginAirport": "SFO",
+        "DestinationAirport": "HND",
+        "Source": "ana"
+      },
+      "Date": "2026-04-10",
+      "Source": "ana",
+      "JAvailable": true,
+      "FAvailable": true,
+      "JMileageCost": "85000",
+      "FMileageCost": "165000",
+      "JTaxesFees": "30000",
+      "FTaxesFees": "35000",
+      "TaxesCurrency": "USD",
+      "JAirlines": "NH",
+      "FAirlines": "NH",
+      "JDirect": true,
+      "FDirect": true,
+      "JRemainingSeats": 4,
+      "FRemainingSeats": 1
+    },
+    {
+      "ID": "rec-3",
+      "Route": {
+        "OriginAirport": "SFO",
+        "DestinationAirport": "HND",
+        "Source": "united"
+      },
+      "Date": "2026-04-12",
+      "Source": "united",
+      "JAvailable": true,
+      "JMileageCost": "88000",
+      "JTaxesFees": "5960",
+      "TaxesCurrency": "USD",
+      "JAirlines": "UA",
+      "JDirect": true,
+      "JRemainingSeats": 7
+    },
+    {
+      "ID": "rec-4",
+      "Route": {
+        "OriginAirport": "SFO",
+        "DestinationAirport": "HND",
+        "Source": "smiles"
+      },
+      "Date": "2026-04-09",
+      "Source": "smiles",
+      "JAvailable": true,
+      "JMileageCost": "90000",
+      "JTaxesFees": "2000",
+      "TaxesCurrency": "USD",
+      "JAirlines": "NH",
+      "JDirect": false,
+      "JRemainingSeats": 3
+    }
+  ],
+  "hasMore": false,
+  "cursor": null
+}

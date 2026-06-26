@@ -1,0 +1,44 @@
+# Transfer-ratio table — HAND-MAINTAINED, edit as programs change.
+#
+# Each entry under `currencies` is a points balance you hold. `funds` lists the
+# loyalty programs that currency can move into, keyed by the seats.aero program
+# slug (the "Source" field in award results), with the ratio of program-miles
+# produced per 1 point transferred (almost always 1.0) and the typical transfer
+# time. A program you hold *directly* (e.g. Alaska miles from a BofA card)
+# "funds itself" with held_directly: true.
+#
+# Ratios change rarely; verify against the program's site before a big transfer.
+
+currencies:
+  amex_mr:
+    display: "Amex Membership Rewards"
+    funds:
+      aeroplan: {ratio: 1.0, transfer_time: "instant"}        # Air Canada
+      ana: {ratio: 1.0, transfer_time: "2-3 days"}            # ANA Mileage Club
+      virginatlantic: {ratio: 1.0, transfer_time: "instant"}  # Flying Club
+      flyingblue: {ratio: 1.0, transfer_time: "instant"}      # Air France/KLM
+      britishairways: {ratio: 1.0, transfer_time: "instant"}  # BA Avios
+      lifemiles: {ratio: 1.0, transfer_time: "instant"}       # Avianca
+      delta: {ratio: 1.0, transfer_time: "instant"}           # SkyMiles
+      emirates: {ratio: 1.0, transfer_time: "instant"}
+      qantas: {ratio: 1.0, transfer_time: "instant"}
+      singapore: {ratio: 1.0, transfer_time: "1-2 days"}      # KrisFlyer
+
+  chase_ur:
+    display: "Chase Ultimate Rewards"
+    funds:
+      aeroplan: {ratio: 1.0, transfer_time: "instant"}        # Air Canada
+      united: {ratio: 1.0, transfer_time: "instant"}          # MileagePlus
+      virginatlantic: {ratio: 1.0, transfer_time: "instant"}
+      flyingblue: {ratio: 1.0, transfer_time: "instant"}
+      britishairways: {ratio: 1.0, transfer_time: "instant"}
+      emirates: {ratio: 1.0, transfer_time: "1-2 days"}
+      singapore: {ratio: 1.0, transfer_time: "1-2 days"}
+      jetblue: {ratio: 1.0, transfer_time: "instant"}         # TrueBlue
+
+  # Alaska miles are earned directly on the Bank of America Alaska card; Alaska
+  # is NOT an Amex/Chase transfer partner, so it's its own bucket.
+  alaska_miles:
+    display: "Alaska Mileage Plan"
+    funds:
+      alaska: {ratio: 1.0, held_directly: true}
