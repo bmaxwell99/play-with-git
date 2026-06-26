@@ -29,18 +29,16 @@ def fetch_for_trip(
     if client is None:
         client = SeatsAeroClient(api_key or os.environ.get("SEATSAERO_API_KEY", ""))
 
-    awards: list[AwardOption] = []
-    for cabin in trip.cabins:
-        awards.extend(
-            client.search(
-                origin=trip.origin,
-                destination=trip.destination,
-                start_date=trip.earliest,
-                end_date=trip.latest,
-                cabin=cabin,
-            )
-        )
-    return awards
+    # One query, no cabin filter — each record already carries every cabin, so
+    # the parser expands them all and price_options() keeps only the cabins this
+    # trip asked for. (Querying per-cabin would re-emit the same record's cabins
+    # once per request, producing duplicates.)
+    return client.search(
+        origin=trip.origin,
+        destination=trip.destination,
+        start_date=trip.earliest,
+        end_date=trip.latest,
+    )
 
 
 def priced_for_trip(

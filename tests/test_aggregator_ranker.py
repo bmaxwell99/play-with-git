@@ -51,6 +51,13 @@ class AggregatorTest(unittest.TestCase):
         self.assertTrue(all(o.award.cabin == "business" for o in priced))
         self.assertEqual(len(priced), 4)  # alaska, ana, united, smiles business
 
+    def test_dedupes_identical_awards(self):
+        from airpoints.models import AwardOption
+
+        dupe = AwardOption("ana", "SFO", "HND", "2026-04-10", "business", 85000, 300.0)
+        priced = price_options([dupe, dupe], self.balances, self.table)
+        self.assertEqual(len(priced), 1)
+
     def test_unfundable_program_kept_with_no_funding(self):
         priced = price_options(self.awards, self.balances, self.table)
         smiles = next(o for o in priced if o.award.program == "smiles")

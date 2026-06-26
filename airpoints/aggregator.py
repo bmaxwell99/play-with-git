@@ -20,9 +20,22 @@ def price_options(
     rather than pretending they don't exist.
     """
     priced: list[PricedOption] = []
+    seen: set[tuple] = set()
     for award in awards:
         if trip is not None and not trip.wants_cabin(award.cabin):
             continue
+        # Collapse identical awards (seats.aero can return repeated snapshots).
+        key = (
+            award.origin,
+            award.destination,
+            award.date,
+            award.cabin,
+            award.program,
+            award.miles,
+        )
+        if key in seen:
+            continue
+        seen.add(key)
         funding = table.cheapest_funding(award.program, award.miles, balances)
         priced.append(PricedOption(award=award, funding=funding))
     return priced
