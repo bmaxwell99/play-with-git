@@ -23,9 +23,15 @@ from ..models import CABIN_PREFIXES, AwardOption
 
 BASE_URL = "https://seats.aero/partnerapi"
 
+# seats.aero reports per-cabin taxes in the field `{prefix}TotalTaxes` (an int).
+# Its convention is the smallest currency unit (cents): e.g. 5600 == $56.00.
+# If you find a real response where the value is already whole dollars, flip
+# this to False. This is the one field unit worth confirming against live data.
+TAXES_IN_CENTS = True
+
 
 def _to_int(value) -> Optional[int]:
-    """seats.aero sends numbers as strings ('30000'); be defensive."""
+    """seats.aero sends mileage costs as strings ('30000'); be defensive."""
     if value in (None, ""):
         return None
     try:
@@ -34,15 +40,26 @@ def _to_int(value) -> Optional[int]:
         return None
 
 
+def _cabin_miles(raw: dict, prefix: str) -> Optional[int]:
+    """Mileage cost for a cabin. Prefer the int *Raw field, fall back to the
+    string field (older/partial responses only carry the string)."""
+    miles = _to_int(raw.get(f"{prefix}MileageCostRaw"))
+    if miles is None:
+        miles = _to_int(raw.get(f"{prefix}MileageCost"))
+    return miles
+
+
 def _taxes_to_usd(raw: dict, prefix: str) -> float:
-    """Per-cabin taxes/fees. seats.aero reports these in cents (e.g. '5600')."""
-    cents = _to_int(raw.get(f"{prefix}TaxesFees"))
-    if cents is None:
+    """Per-cabin taxes/fees from `{prefix}TotalTaxes`.
+
+    The `TaxesCurrency` field is informational; we treat the value as USD.
+    Non-USD currencies pass through unscaled — surface `TaxesCurrency` in
+    callers if you need exact FX.
+    """
+    value = _to_int(raw.get(f"{prefix}TotalTaxes"))
+    if value is None:
         return 0.0
-    # Currency field is informational; we treat the minor-unit value as USD
-    # cents unless told otherwise. Non-USD currencies pass through unscaled-ish;
-    # surface the raw currency in callers if you need exact FX.
-    return round(cents / 100.0, 2)
+    return round(value / 100.0, 2) if TAXES_IN_CENTS else float(value)
 
 
 def parse_availability(records: Iterable[dict]) -> list[AwardOption]:
@@ -60,7 +77,7 @@ def parse_availability(records: Iterable[dict]) -> list[AwardOption]:
         for prefix, cabin in CABIN_PREFIXES.items():
             if not raw.get(f"{prefix}Available"):
                 continue
-            miles = _to_int(raw.get(f"{prefix}MileageCost"))
+            miles = _cabin_miles(raw, prefix)
             if miles is None or miles <= 0:
                 continue
             options.append(

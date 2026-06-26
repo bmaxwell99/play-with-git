@@ -2,6 +2,7 @@
   "data": [
     {
       "ID": "rec-1",
+      "RouteID": "route-1",
       "Route": {
         "OriginAirport": "SFO",
         "DestinationAirport": "HND",
@@ -15,8 +16,10 @@
       "FAvailable": false,
       "YMileageCost": "30000",
       "JMileageCost": "75000",
-      "YTaxesFees": "5600",
-      "JTaxesFees": "5600",
+      "YMileageCostRaw": 30000,
+      "JMileageCostRaw": 75000,
+      "YTotalTaxes": 5600,
+      "JTotalTaxes": 5600,
       "TaxesCurrency": "USD",
       "YAirlines": "JL",
       "JAirlines": "JL",
@@ -27,6 +30,7 @@
     },
     {
       "ID": "rec-2",
+      "RouteID": "route-2",
       "Route": {
         "OriginAirport": "SFO",
         "DestinationAirport": "HND",
@@ -38,8 +42,10 @@
       "FAvailable": true,
       "JMileageCost": "85000",
       "FMileageCost": "165000",
-      "JTaxesFees": "30000",
-      "FTaxesFees": "35000",
+      "JMileageCostRaw": 85000,
+      "FMileageCostRaw": 165000,
+      "JTotalTaxes": 30000,
+      "FTotalTaxes": 35000,
       "TaxesCurrency": "USD",
       "JAirlines": "NH",
       "FAirlines": "NH",
@@ -50,6 +56,7 @@
     },
     {
       "ID": "rec-3",
+      "RouteID": "route-3",
       "Route": {
         "OriginAirport": "SFO",
         "DestinationAirport": "HND",
@@ -59,7 +66,8 @@
       "Source": "united",
       "JAvailable": true,
       "JMileageCost": "88000",
-      "JTaxesFees": "5960",
+      "JMileageCostRaw": 88000,
+      "JTotalTaxes": 5960,
       "TaxesCurrency": "USD",
       "JAirlines": "UA",
       "JDirect": true,
@@ -67,6 +75,7 @@
     },
     {
       "ID": "rec-4",
+      "RouteID": "route-4",
       "Route": {
         "OriginAirport": "SFO",
         "DestinationAirport": "HND",
@@ -76,7 +85,8 @@
       "Source": "smiles",
       "JAvailable": true,
       "JMileageCost": "90000",
-      "JTaxesFees": "2000",
+      "JMileageCostRaw": 90000,
+      "JTotalTaxes": 2000,
       "TaxesCurrency": "USD",
       "JAirlines": "NH",
       "JDirect": false,
