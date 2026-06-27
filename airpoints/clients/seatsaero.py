@@ -40,26 +40,75 @@ def _to_int(value) -> Optional[int]:
         return None
 
 
-def _cabin_miles(raw: dict, prefix: str) -> Optional[int]:
-    """Mileage cost for a cabin. Prefer the int *Raw field, fall back to the
-    string field (older/partial responses only carry the string)."""
-    miles = _to_int(raw.get(f"{prefix}MileageCostRaw"))
-    if miles is None:
-        miles = _to_int(raw.get(f"{prefix}MileageCost"))
-    return miles
+def _miles(raw: dict, *names: str) -> Optional[int]:
+    """First present mileage value among `names` (prefer the int *Raw field,
+    fall back to the string field)."""
+    for name in names:
+        value = _to_int(raw.get(name))
+        if value is not None:
+            return value
+    return None
 
 
-def _taxes_to_usd(raw: dict, prefix: str) -> float:
-    """Per-cabin taxes/fees from `{prefix}TotalTaxes`.
+def _taxes_to_usd(raw: dict, field: str) -> float:
+    """Taxes/fees from a `*TotalTaxes` field.
 
-    The `TaxesCurrency` field is informational; we treat the value as USD.
-    Non-USD currencies pass through unscaled — surface `TaxesCurrency` in
-    callers if you need exact FX.
+    seats.aero's convention is cents (e.g. 560 == $5.60). `TaxesCurrency` is
+    informational; we treat the value as USD — surface it in callers if you
+    need exact FX.
     """
-    value = _to_int(raw.get(f"{prefix}TotalTaxes"))
+    value = _to_int(raw.get(field))
     if value is None:
         return 0.0
     return round(value / 100.0, 2) if TAXES_IN_CENTS else float(value)
+
+
+def _cabin_options(raw: dict, prefix: str, cabin: str, common: dict) -> list[AwardOption]:
+    """Build the AwardOption(s) for one cabin of one record.
+
+    seats.aero packs two things into each cabin: the *cheapest* itinerary
+    (`{p}MileageCost`, which may be a connection) and, when `{p}Direct` is set,
+    a *nonstop* itinerary (`{p}DirectMileageCost`). We emit the cheapest always,
+    and the nonstop separately when it's priced differently — so the
+    nonstop-vs-connection mileage trade-off is visible rather than hidden behind
+    a single (and previously inaccurate) `direct` flag.
+    """
+    if not raw.get(f"{prefix}Available"):
+        return []
+    cheapest = _miles(raw, f"{prefix}MileageCostRaw", f"{prefix}MileageCost")
+    if not cheapest or cheapest <= 0:
+        return []
+
+    direct_cost = _miles(raw, f"{prefix}DirectMileageCostRaw", f"{prefix}DirectMileageCost")
+    has_nonstop = bool(raw.get(f"{prefix}Direct")) and bool(direct_cost) and direct_cost > 0
+
+    options = [
+        AwardOption(
+            cabin=cabin,
+            miles=cheapest,
+            taxes_usd=_taxes_to_usd(raw, f"{prefix}TotalTaxes"),
+            airlines=raw.get(f"{prefix}Airlines", "") or "",
+            direct=has_nonstop and direct_cost == cheapest,
+            remaining_seats=_to_int(raw.get(f"{prefix}RemainingSeats")),
+            **common,
+        )
+    ]
+    if has_nonstop and direct_cost != cheapest:
+        options.append(
+            AwardOption(
+                cabin=cabin,
+                miles=direct_cost,
+                taxes_usd=_taxes_to_usd(raw, f"{prefix}DirectTotalTaxes")
+                or _taxes_to_usd(raw, f"{prefix}TotalTaxes"),
+                airlines=raw.get(f"{prefix}DirectAirlines", "")
+                or raw.get(f"{prefix}Airlines", "")
+                or "",
+                direct=True,
+                remaining_seats=_to_int(raw.get(f"{prefix}DirectRemainingSeats")),
+                **common,
+            )
+        )
+    return options
 
 
 def parse_availability(records: Iterable[dict]) -> list[AwardOption]:
@@ -67,33 +116,15 @@ def parse_availability(records: Iterable[dict]) -> list[AwardOption]:
     options: list[AwardOption] = []
     for raw in records:
         route = raw.get("Route") or {}
-        origin = route.get("OriginAirport") or raw.get("OriginAirport", "")
-        destination = route.get("DestinationAirport") or raw.get(
-            "DestinationAirport", ""
-        )
-        program = raw.get("Source") or route.get("Source", "")
-        date = raw.get("Date", "")
-
+        common = {
+            "program": raw.get("Source") or route.get("Source", ""),
+            "origin": route.get("OriginAirport") or raw.get("OriginAirport", ""),
+            "destination": route.get("DestinationAirport")
+            or raw.get("DestinationAirport", ""),
+            "date": raw.get("Date", ""),
+        }
         for prefix, cabin in CABIN_PREFIXES.items():
-            if not raw.get(f"{prefix}Available"):
-                continue
-            miles = _cabin_miles(raw, prefix)
-            if miles is None or miles <= 0:
-                continue
-            options.append(
-                AwardOption(
-                    program=program,
-                    origin=origin,
-                    destination=destination,
-                    date=date,
-                    cabin=cabin,
-                    miles=miles,
-                    taxes_usd=_taxes_to_usd(raw, prefix),
-                    airlines=raw.get(f"{prefix}Airlines", "") or "",
-                    direct=bool(raw.get(f"{prefix}Direct", False)),
-                    remaining_seats=_to_int(raw.get(f"{prefix}RemainingSeats")),
-                )
-            )
+            options.extend(_cabin_options(raw, prefix, cabin, common))
     return options
 
 
