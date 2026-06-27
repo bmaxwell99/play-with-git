@@ -1,0 +1,14 @@
+# Secrets — never commit
+.env
+
+# Personal watchlist (the example is committed; your real one isn't)
+watchlist.yaml
+data/watchlist.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/

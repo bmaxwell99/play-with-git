@@ -1,0 +1,11 @@
+# Core (always needed)
+PyYAML>=6.0
+
+# Live seats.aero fetching
+requests>=2.31
+
+# LLM ranking (--llm). Optional: the heuristic ranker works without it.
+anthropic>=0.69
+
+# Tests
+pytest>=8.0
