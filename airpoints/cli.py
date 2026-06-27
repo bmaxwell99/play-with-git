@@ -59,6 +59,9 @@ def main(argv=None) -> int:
         "--llm", action="store_true", help="rank with Claude (needs ANTHROPIC_API_KEY)"
     )
     parser.add_argument("--top", type=int, default=5, help="options to show per trip")
+    parser.add_argument(
+        "--direct-only", action="store_true", help="show only nonstop awards"
+    )
     args = parser.parse_args(argv)
 
     load_dotenv()
@@ -72,6 +75,8 @@ def main(argv=None) -> int:
     print(f"Balances: {balances}")
     for trip in trips:
         options = priced_for_trip(trip, balances, table, fixture=args.fixture)
+        if args.direct_only:
+            options = [o for o in options if o.award.direct]
         _report_trip(trip, options, args, balances)
     return 0
 

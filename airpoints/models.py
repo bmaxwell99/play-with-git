@@ -121,8 +121,9 @@ class PricedOption:
 
     def summary(self) -> str:
         a = self.award
+        stops = "nonstop" if a.direct else "1+ stop"
         base = (
-            f"{a.origin}->{a.destination} {a.date} {a.cabin} "
+            f"{a.origin}->{a.destination} {a.date} {a.cabin} {stops} "
             f"{a.miles:,} {a.program} miles + ${a.taxes_usd:,.0f}"
         )
         if self.funding is None:
