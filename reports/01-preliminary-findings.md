@@ -75,6 +75,31 @@ recently faster than the now-flat national market (+0.7% YoY nationally vs.
 | 2020 → 2026 | ~+10–15% | ~+55% | **Much slower** |
 | Real terms, 2017 → 2026 (CPI ≈ +33%) | ≈ −25% | ≈ +30% | **Much slower** |
 
+## Addendum (2026-07-05): the last year, and the post-COVID window
+
+**Last 12 months — Manhattan is now *outperforming*.** The Q2 2026 Elliman
+report puts the Manhattan condo/co-op median at a **record $1,250,000, +4.2%
+YoY** — the sixth straight quarter of annual gains, with listing inventory
+falling, a record 57.9% of sales above $1M, and record cash share. The national
+Case-Shiller index rose just **+0.8% YoY** (April 2026) and has declined
+month-over-month recently. Case-Shiller's NY-metro all-homes index was **+3.8%
+YoY**, second-strongest of the 20 metros (after Chicago, +6.5%). Roughly:
+Manhattan +4%, nation +1%.
+
+**Since COVID — Manhattan still far behind.** From the COVID-eve Q4 2019 median
+of **$999,000** to Q2 2026's $1,250,000 is **~+25% over 6.5 years (≈3.5%/yr)** —
+and less than that on a seasonally matched basis, since Q4 medians run below Q2
+medians (vs. Q2 2019's ~$1.2M median, mid-2026 is only ~+3–5%). The national
+Case-Shiller index rose from ~212 (Feb 2020, approximate) to ~330 — **~+55%
+(≈7%/yr)**. Manhattan captured roughly half or less of the national post-COVID
+boom; the deficit was built in 2020–2022 (nation +45%, Manhattan roughly flat)
+and Manhattan has been closing the gap only since 2024.
+
+| Window | Manhattan (median) | National (Case-Shiller) |
+|---|---|---|
+| Mid-2025 → mid-2026 | **+4.2%** (record $1.25M) | **+0.8%** |
+| Q4 2019 → Q2 2026 | ~+25% (≈3.5%/yr); ~+3–5% seasonally matched vs Q2 2019 | ~+55% (≈7%/yr) |
+
 ## Why the divergence? (hypotheses to test)
 
 1. **Tax policy:** 2017 SALT deduction cap raised the carrying cost of high-tax
