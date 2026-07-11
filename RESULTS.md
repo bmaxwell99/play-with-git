@@ -111,6 +111,18 @@ is real (confidence intervals well separated) but tiny relative to luck: the
 best-vs-worst spread in a single all-hybrid game averages ~191 points, so
 ~4 points/game only shows up over many games.
 
+## Score distributions in all-hybrid games
+
+From 50,000 games where all four seats play `hybrid`:
+
+- Any player's total: mean ~307, sd ~89. Winner's total: **mean 215, sd 48,
+  median 215** (middle 50%: 182–247; 5th/95th pct: 135/295).
+- Average best-vs-worst spread within a game: **~191 points** (median 183) —
+  luck dwarfs the few-points-per-game strategy edges in any single game.
+- **A final total ≤ 180 wins the game 95% of the time.** Other landmarks for
+  P(win | final total ≤ T): 150 → 98.8%, 200 → 90%, 230 → 79%, 290 → 52%.
+  Only 1% of winners ever score above 326.
+
 ## Reproduce
 
 ```bash
