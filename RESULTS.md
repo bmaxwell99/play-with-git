@@ -84,6 +84,33 @@ hybrid 306.8 ± 0.7 (25.4% wins) vs greedy-points 308.2 ± 0.7 (24.6% wins).
 break ties toward the suit you hold most of, always chain 2s, name your
 longest suit after an 8.
 
+## Does card counting help? (yes, a little)
+
+The `counter` strategy is hybrid plus a running count of the discard pile,
+which tells it exactly which suits/ranks remain among opponents' hands and the
+draw pile. It uses the count two ways:
+
+1. **Shed order tiebreak** — among equal-point/equal-suit-length cards, discard
+   the one *least* likely to be playable later (fewest unseen suit+rank
+   matches), keeping "live" cards.
+2. **Suit naming after an 8** — among its longest suits, name the one
+   opponents are least likely to be able to follow, forcing draws.
+
+Results (30,000 games each):
+
+| matchup | counter mean | hybrid mean | edge |
+|---|---|---|---|
+| 1 counter vs 3 hybrid | 304.4 ± 1.0 | 308.1 ± 0.6 | −3.7 pts/game |
+| 2 counters vs 2 hybrid | 305.0 ± 0.7 | 308.8 ± 0.7 | −3.8 pts/game |
+| shed-tiebreak counting only | 305.1 ± 1.0 | 306.8 ± 0.6 | −1.7 |
+| suit-naming counting only | 305.6 ± 1.0 | 307.4 ± 0.6 | −1.8 |
+
+A lone counter's win rate rises from the fair 25.0% to **25.9%** per seat.
+The two uses of the count are roughly additive (~1.7 + ~1.8 ≈ 3.7). The edge
+is real (confidence intervals well separated) but tiny relative to luck: the
+best-vs-worst spread in a single all-hybrid game averages ~191 points, so
+~4 points/game only shows up over many games.
+
 ## Reproduce
 
 ```bash

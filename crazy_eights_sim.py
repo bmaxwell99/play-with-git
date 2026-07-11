@@ -160,10 +160,50 @@ class HybridStrategy(Strategy):
         return max(legal, key=lambda c: (POINTS[c[0]], counts[c[1]], state["rng"].random()))
 
 
+class CountingStrategy(Strategy):
+    """Hybrid plus card counting of the discard pile.
+
+    Tracks which suits/ranks remain unseen (opponents' hands + draw pile).
+    Sheds by points, then long-suit, then prefers to discard the card least
+    likely to be playable later (fewest unseen suit/rank matches). After an 8,
+    names its longest suit, breaking ties toward the suit opponents are least
+    likely to hold.
+    """
+    name = "counter"
+
+    @staticmethod
+    def _unseen(hand, state):
+        suit_unseen = Counter({s: 13 for s in SUITS})
+        rank_unseen = Counter({r: 4 for r in RANKS})
+        for r, s in state["discard"]:
+            suit_unseen[s] -= 1
+            rank_unseen[r] -= 1
+        for r, s in hand:
+            suit_unseen[s] -= 1
+            rank_unseen[r] -= 1
+        return suit_unseen, rank_unseen
+
+    def choose_play(self, hand, legal, state):
+        counts = Counter(s for _, s in hand)
+        suit_unseen, rank_unseen = self._unseen(hand, state)
+
+        def liveness(c):
+            return suit_unseen[c[1]] + rank_unseen[c[0]]
+
+        return max(legal, key=lambda c: (POINTS[c[0]], counts[c[1]],
+                                         -liveness(c), state["rng"].random()))
+
+    def choose_suit(self, hand, state):
+        counts = Counter(s for _, s in hand)
+        suit_unseen, _ = self._unseen(hand, state)
+        return max(SUITS, key=lambda s: (counts[s], -suit_unseen[s],
+                                         state["rng"].random()))
+
+
 STRATEGIES = {cls.name: cls for cls in
               (RandomStrategy, GreedyPointsStrategy, LowFirstStrategy,
                SuitMajorityStrategy, Hoard8Strategy, DefensiveStrategy,
-               HybridStrategy)}
+               HybridStrategy, CountingStrategy)}
 
 
 # ---------------------------------------------------------------------------
@@ -222,6 +262,7 @@ def play_round(strategies, hand_size, start_player, rng, max_turns=2000):
             "pot": pot,
             "hand_size": hand_size,
             "opp_sizes": [len(hands[i]) for i in range(n) if i != turn],
+            "discard": discard,
             "rng": rng,
         }
 
