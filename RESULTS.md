@@ -160,6 +160,14 @@ Best single change: **charge the 8 its pip value (8) instead of 50.** The 8's
 Keep the 2 at 20: it is the game's most decision-rich card (chain/eat/hold),
 and cheapening it removes skill signal (7,100 vs 3,800 games to detect).
 
+Price sweeps (20k games each) show the two cards are qualitatively different:
+the 8's curve is monotonic — every added point buys pure variance (price
+8/20/35/50 → detect in 3,760/5,246/6,825/11,449 games) — while the 2 has an
+interior optimum (price 2/10/20/35 with 8=8 → 7,109/3,155/3,760/4,767).
+Price buys skill expression on the 2 (up to ~10-20 points) and only noise on
+the 8. Minimum-luck ruleset found: **8 costs 8, 2 costs 10** (~3.6x faster
+skill detection than baseline).
+
 ## Reproduce
 
 ```bash
