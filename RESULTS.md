@@ -111,6 +111,22 @@ is real (confidence intervals well separated) but tiny relative to luck: the
 best-vs-worst spread in a single all-hybrid game averages ~191 points, so
 ~4 points/game only shows up over many games.
 
+## 100k-game tournament: counter vs hybrid vs greedy vs suit-major
+
+One seat each, seating shuffled every game, 100,000 games (seed 100000).
+All gaps exceed the ±0.55 confidence intervals — the full ranking is settled:
+
+| strategy | mean | median | win rate |
+|---|---|---|---|
+| counter | 304.9 | 298 | 26.49% |
+| hybrid | 308.3 | 302 | 25.13% |
+| greedy-points | 310.2 | 304 | 24.49% |
+| suit-major | 313.0 | 306 | 23.89% |
+
+Each refinement layer (suit tiebreak, then discard counting) is worth ~2-3.5
+points per game; the hybrid-vs-greedy edge, soft at 30k games, is unambiguous
+here.
+
 ## Score distributions in all-hybrid games
 
 From 50,000 games where all four seats play `hybrid`:
