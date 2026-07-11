@@ -142,6 +142,24 @@ From 50,000 games where all four seats play `hybrid`:
   319 → 99%; no player in 50k games won after reaching 380). Highest winning
   score observed: 406.
 
+## Rule-change experiment: reducing luck
+
+Tested scoring variants for how fast skill emerges (games for a lone counter's
+edge over three hybrids to be statistically detectable; 20k games each):
+
+| variant | games to detect skill | spread/avg score |
+|---|---|---|
+| baseline (8=50, 2=20) | ~11,400 | 0.62 |
+| **8 counts 8, 2 stays 20** | **~3,800** | 0.52 |
+| pip values (8=8 and 2=2) | ~7,100 | 0.53 |
+| round score capped at 25 | ~5,000 | 0.44 |
+| placing points 0/1/2/3 per round | ~6,600 | 0.46 |
+
+Best single change: **charge the 8 its pip value (8) instead of 50.** The 8's
+50 points is pure noise — everyone dumps 8s ASAP, so no decisions ride on it.
+Keep the 2 at 20: it is the game's most decision-rich card (chain/eat/hold),
+and cheapening it removes skill signal (7,100 vs 3,800 games to detect).
+
 ## Reproduce
 
 ```bash
