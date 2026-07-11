@@ -122,6 +122,9 @@ From 50,000 games where all four seats play `hybrid`:
 - **A final total ≤ 180 wins the game 95% of the time.** Other landmarks for
   P(win | final total ≤ T): 150 → 98.8%, 200 → 90%, 230 → 79%, 290 → 52%.
   Only 1% of winners ever score above 326.
+- **A final total ≥ 271 loses the game 95% of the time** (300 → 98%,
+  319 → 99%; no player in 50k games won after reaching 380). Highest winning
+  score observed: 406.
 
 ## Reproduce
 
