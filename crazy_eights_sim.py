@@ -210,8 +210,12 @@ STRATEGIES = {cls.name: cls for cls in
 # Round engine
 # ---------------------------------------------------------------------------
 
-def play_round(strategies, hand_size, start_player, rng, max_turns=2000):
-    """Play one round; return list of scores per seat (0 for the winner)."""
+def play_round(strategies, hand_size, start_player, rng, max_turns=2000,
+               stats=None):
+    """Play one round; return list of scores per seat (0 for the winner).
+
+    If `stats` is a list, appends (dealt_hand_size, end_hand_sizes_per_seat,
+    winner_seat_or_None) when the round ends."""
     n = len(strategies)
     deck = FULL_DECK[:]
     rng.shuffle(deck)
@@ -293,6 +297,8 @@ def play_round(strategies, hand_size, start_player, rng, max_turns=2000):
             if played[0] == "8":
                 current_suit = strat.choose_suit(hand, state)
             if not hand:  # went out — round over, specials fizzle
+                if stats is not None:
+                    stats.append((hand_size, [len(h) for h in hands], turn))
                 return [0 if i == turn else hand_points(hands[i]) for i in range(n)]
             if played[0] == "2":
                 pot += 2
@@ -304,14 +310,17 @@ def play_round(strategies, hand_size, start_player, rng, max_turns=2000):
         turn = (turn + direction) % n
 
     # Safety valve: deadlocked round (essentially unreachable) — score as-is.
+    if stats is not None:
+        stats.append((hand_size, [len(h) for h in hands], None))
     return [hand_points(h) for h in hands]
 
 
-def play_game(strategies, rng):
+def play_game(strategies, rng, stats=None):
     """15-round game; returns total score per seat."""
     totals = [0] * len(strategies)
     for rnd, hand_size in enumerate(HAND_SIZES):
-        scores = play_round(strategies, hand_size, rnd % len(strategies), rng)
+        scores = play_round(strategies, hand_size, rnd % len(strategies), rng,
+                            stats=stats)
         for i, s in enumerate(scores):
             totals[i] += s
     return totals
