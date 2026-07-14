@@ -1,0 +1,41 @@
+[
+  {
+    "Type": "DataTable",
+    "Name": "DT_PalNameText",
+    "Class": "UScriptClass'DataTable'",
+    "Rows": {
+      "PAL_NAME_SheepBall": {
+        "TextData": {
+          "Namespace": "",
+          "Key": "PAL_NAME_SheepBall",
+          "SourceString": "Lamball",
+          "LocalizedString": "Lamball"
+        }
+      },
+      "PAL_NAME_Anubis": {
+        "TextData": {
+          "Namespace": "",
+          "Key": "PAL_NAME_Anubis",
+          "SourceString": "Anubis",
+          "LocalizedString": "Anubis"
+        }
+      },
+      "PAL_NAME_DarkMutant": {
+        "TextData": {
+          "Namespace": "",
+          "Key": "PAL_NAME_DarkMutant",
+          "SourceString": "Necromus Jr",
+          "LocalizedString": "Necromus Jr"
+        }
+      },
+      "PAL_NAME_PinkCat": {
+        "TextData": {
+          "Namespace": "",
+          "Key": "PAL_NAME_PinkCat",
+          "SourceString": "Cattiva",
+          "LocalizedString": "Cattiva"
+        }
+      }
+    }
+  }
+]
