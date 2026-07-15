@@ -114,6 +114,76 @@ python3 optimize_workers.py /tmp/out/pals.json coverage
 
 Do not use the sample numbers for actual game decisions.
 
+## Step 4 (optional): Plot coordinates on a map
+
+`plot_map.py` projects labelled points — base locations, spawn coords,
+fast-travel statues, dig spots — onto a map and writes **one
+self-contained HTML file** (image embedded, no server, no dependencies)
+you can drop into Slack/Discord or open anywhere. Markers are coloured by
+category with hover tooltips, categories toggle on/off in the legend, and
+a live world-coordinate readout follows your mouse.
+
+### Getting a base map image
+
+You don't need to (and shouldn't redistribute) a wiki's map — the world
+map texture is in *your* game files, same as the stats. In FModel, search
+for the map texture (e.g. `T_WorldMap*` / `T_OpenWorldMap*` under
+`Pal/Content/Pal/Texture/UI/Map/`), right-click → **Save Texture (.png)**.
+For personal/base-planning use that's the real 1.0 map. If you'd rather
+not bother, skip `--map` entirely and you get a clean coordinate grid,
+which is still perfectly usable for relative layout.
+
+### Calibrating the coordinate transform
+
+Palworld's world coordinates don't map 1:1 to map pixels (and its map Y is
+flipped), so instead of hardcoding constants that 1.0 may have changed,
+you give **reference points** and the tool solves the transform:
+
+1. Pick a spot you can identify on your map image and note its pixel
+   position (most image viewers show x/y on hover), plus the world coord
+   it corresponds to (from the datamine, or read off the in-game compass).
+2. Do that for 2 points (enough for Palworld's axis-aligned map; the Y
+   flip is handled automatically) or 3 points (if your map is rotated).
+
+```sh
+python3 plot_map.py points.csv --map worldmap.png --out base_map.html \
+    --ref=112,-435,812,1440 --ref=380,140,1560,690 \
+    --title "Our base & spawn map"
+```
+
+Use the `--ref=` (equals) form: Palworld coordinates are often negative,
+and `--ref -230,...` would otherwise be mistaken for a command-line flag.
+
+`points.csv` columns: `x,y,label[,category]`. `category` drives marker
+colour and the legend toggles (e.g. `base`, `spawn`, `statue`, `mining`).
+You can also feed a `pals.json`-style file if you add `x`/`y` fields.
+
+No calibration handy? `--autofit` scales all points to fill the canvas —
+great for a quick relative-layout view or grid mode:
+
+```sh
+python3 plot_map.py sample_data/points.sample.csv --out demo.html --autofit
+```
+
+### Viewing it on localhost
+
+Add `--serve` to spin up a local web server (stdlib, no deps) and open
+the map in your browser at `http://localhost:8000`:
+
+```sh
+python3 plot_map.py sample_data/points.sample.csv --out demo.html \
+    --autofit --serve
+# serving map at http://localhost:8000/demo.html  (Ctrl+C to stop)
+```
+
+Pass a port if 8000 is taken: `--serve 8127`. The server binds to
+`127.0.0.1` (local only). Re-run the command to regenerate after editing
+your points file, then refresh the browser.
+
+(That sample command uses synthetic coordinates from `sample_data/` — fake
+numbers, real format — so you can see the output before extracting
+anything.)
+
 ## Ideas for later
 
 - Parse `DT_PassiveSkill_Main` to rank work-speed passives (Artisan,
