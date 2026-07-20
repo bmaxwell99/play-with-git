@@ -44,6 +44,13 @@ Zillow's ZHVI condo cut is the only free series that isolates *Manhattan*
 area (heavily NYC-weighted) but is the gold-standard repeat-sales methodology and
 runs back to 1995.
 
+## Sub-project: Lower East Side sales mining (public records)
+
+See [`reports/03-les-mining-plan.md`](reports/03-les-mining-plan.md).
+`src/fetch_les_sales.py` (DOF sales 2003+, Socrata), `src/fetch_acris_deeds.py`
+(ACRIS deeds back to 1966 via PLUTO block footprint), `src/analyze_les_sales.py`
+(yearly volume/median/mix). Needs `data.cityofnewyork.us` allowlisted.
+
 ## How to run
 
 ```bash
