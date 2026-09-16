@@ -36,11 +36,11 @@ def render_biome_map(gen: WorldGenerator, size: int = 512, show_height: bool = F
             biome = gen.get_biome(wx, wy)
             color = BIOME_COLORS.get(biome, (0, 0, 0))
 
-            if show_height and biome != Biome.OCEAN:
+            if biome != Biome.OCEAN:
                 h = gen.get_biome_height(biome, wx, wy)
-                if h < 30.0 and biome != Biome.OCEAN:
+                if h < 30.0:
                     color = SHALLOW_COLOR
-                else:
+                elif show_height:
                     brightness = max(0.4, min(1.2, 0.6 + h / 200.0))
                     color = tuple(max(0, min(255, int(c * brightness))) for c in color)
 
