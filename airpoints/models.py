@@ -138,3 +138,85 @@ class PricedOption:
             )
         status = "AFFORDABLE" if f.affordable else f"short {f.shortfall:,}"
         return f"{base} | {pay} | {status}"
+
+
+# --- Cash side (Amadeus): flights, hotels, and a combined trip option -------
+
+
+@dataclass
+class FlightOffer:
+    """A round-trip cash fare (or one-way if return_* is None)."""
+
+    origin: str
+    destination: str
+    depart_at: str  # ISO local datetime of outbound departure
+    arrive_at: str  # ISO local datetime of outbound arrival (at destination)
+    price_usd: float
+    carrier: str = ""
+    outbound_stops: int = 0
+    return_depart_at: Optional[str] = None  # ISO local, return departure
+    return_arrive_at: Optional[str] = None  # ISO local, return arrival (at origin)
+    return_stops: Optional[int] = None
+
+    @property
+    def nonstop(self) -> bool:
+        return self.outbound_stops == 0 and (self.return_stops in (None, 0))
+
+    def summary(self) -> str:
+        stops = "nonstop" if self.nonstop else "1+ stop"
+        dep = self.depart_at[11:16]
+        arr = (self.return_arrive_at or self.arrive_at)[11:16]
+        return (
+            f"{self.origin}->{self.destination} {self.carrier} {stops} "
+            f"${self.price_usd:,.0f} (out {dep}, back {arr})"
+        )
+
+
+@dataclass
+class HotelOffer:
+    """Cheapest bookable cash rate for one hotel over a stay."""
+
+    name: str
+    total_usd: float
+    nights: int
+    checkin: str  # YYYY-MM-DD
+    checkout: str  # YYYY-MM-DD
+    hotel_id: str = ""
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+
+    @property
+    def nightly_usd(self) -> float:
+        return round(self.total_usd / self.nights, 2) if self.nights else self.total_usd
+
+    @property
+    def is_hyatt(self) -> bool:
+        # Hyatt is bookable on Chase UR points (1:1), often the points sweet spot.
+        return "hyatt" in self.name.lower()
+
+
+@dataclass
+class TripOption:
+    """One window's cheapest constraint-compliant flight + cheapest hotel."""
+
+    window: str
+    origin: str
+    destination: str
+    flight: FlightOffer
+    hotel: Optional[HotelOffer]
+
+    @property
+    def total_usd(self) -> float:
+        return self.flight.price_usd + (self.hotel.total_usd if self.hotel else 0.0)
+
+    def summary(self) -> str:
+        parts = [f"[{self.window}] ${self.total_usd:,.0f} total", self.flight.summary()]
+        if self.hotel:
+            tag = " (Hyatt — check Chase points)" if self.hotel.is_hyatt else ""
+            parts.append(
+                f"{self.hotel.name} ${self.hotel.total_usd:,.0f} "
+                f"(${self.hotel.nightly_usd:,.0f}/nt x{self.hotel.nights}){tag}"
+            )
+        else:
+            parts.append("no hotel found")
+        return " | ".join(parts)

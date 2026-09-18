@@ -92,6 +92,39 @@ Run it on a schedule — e.g. every 6 hours via cron:
 With `--quiet` it stays silent unless there's something new — so a webhook ping
 means a genuinely new sweet spot.
 
+## Budget trip optimizer (cash flights + hotels)
+
+`airpoints.trip` finds the **cheapest cash trip** across candidate date windows,
+enforcing hard travel rules and combining flight + hotel into one ranked total.
+Both flights and hotels come from the **Amadeus Self-Service API** (free tier —
+one `AMADEUS_CLIENT_ID` / `AMADEUS_CLIENT_SECRET` pair covers both).
+
+It enforces:
+- **nonstop only** (toggle in config),
+- **no departure before a time** and **no landing after a time**, on *both* legs
+  (Amadeus returns local times — exactly what the rule means),
+- a set of **candidate windows** (date pairs) you list, so schedule flexibility
+  is exploited to find the cheapest week.
+
+Per window it picks the cheapest constraint-compliant flight (across all your
+origin airports) plus the cheapest hotel; with `prefer_hyatt: true` it favors
+Hyatt properties (bookable on Chase UR points) and flags them so you can compare
+points against the cash rate.
+
+```bash
+# offline demo (no keys):
+python -m airpoints.trip --config data/trip.example.yaml \
+    --flights-fixture tests/fixtures/amadeus_flights_sample.json \
+    --hotels-fixture tests/fixtures/amadeus_hotels_sample.json
+
+# live (needs Amadeus creds in .env):
+python -m airpoints.trip --config data/trip.example.yaml
+```
+
+Config lives in `data/trip.example.yaml` — origins, destination, hotel city
+code, the constraint block, and the windows to compare. Output is a ranked list
+of the cheapest trips with flight times, hotel, and total.
+
 ## Configuration
 
 **`watchlist.yaml`** — your balances and the trips to monitor:

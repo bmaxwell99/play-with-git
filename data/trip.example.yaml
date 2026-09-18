@@ -1,0 +1,30 @@
+# Budget trip optimizer config. Copy and edit for your trip.
+# Balances/points live in your watchlist; this file is the CASH side.
+
+origins: [JFK, EWR, LGA]   # all NYC-area airports
+destination: MSY           # New Orleans
+city_code: MSY             # Amadeus city code for hotel search
+origin_label: NYC
+adults: 1
+prefer_hyatt: true         # favor Hyatt (bookable on Chase UR points) when priced
+
+constraints:
+  nonstop: true
+  earliest_depart: "09:00" # no flight departs before this (local)
+  latest_arrival: "20:00"  # no flight lands after this (local)
+
+# Candidate windows (Tue->Fri = 3 weekday nights). Blackouts already avoided:
+# Thanksgiving, Dec 18-Jan 4, MLK Jan 15-19, Carnival Jan 29-Feb 9 2027.
+windows:
+  - name: Early Nov
+    depart: 2026-11-03
+    return: 2026-11-06
+  - name: Early Dec
+    depart: 2026-12-01
+    return: 2026-12-04
+  - name: Early Jan
+    depart: 2027-01-06
+    return: 2027-01-08
+  - name: Post-Mardi-Gras Feb
+    depart: 2027-02-16
+    return: 2027-02-19
