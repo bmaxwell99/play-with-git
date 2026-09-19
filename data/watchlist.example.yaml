@@ -1,0 +1,26 @@
+# Your trips + current points balances. Copy to watchlist.yaml and edit.
+#
+# `balances` keys must match currency keys in data/transfer_ratios.yaml.
+# Each trip is a route + date window to monitor, optional cabins + passengers.
+
+balances:
+  amex_mr: 120000
+  chase_ur: 80000
+  alaska_miles: 45000
+
+trips:
+  - name: "Spring Tokyo"
+    origin: SFO
+    destination: HND
+    earliest: 2026-04-01
+    latest: 2026-04-15
+    cabins: [business, first]
+    passengers: 2
+
+  - name: "Summer Paris"
+    origin: SFO
+    destination: CDG
+    earliest: 2026-07-10
+    latest: 2026-07-24
+    cabins: [economy, premium, business]
+    passengers: 2

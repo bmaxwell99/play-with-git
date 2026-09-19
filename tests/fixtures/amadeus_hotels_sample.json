@@ -1,0 +1,59 @@
+{
+  "data": [
+    {
+      "type": "hotel-offers",
+      "available": true,
+      "hotel": {
+        "hotelId": "HYNYCBD1",
+        "name": "HYATT PLACE NEW ORLEANS CONVENTION CENTER",
+        "cityCode": "MSY",
+        "latitude": 29.9436,
+        "longitude": -90.0642
+      },
+      "offers": [
+        {
+          "id": "off1a",
+          "checkInDate": "2026-11-03",
+          "checkOutDate": "2026-11-06",
+          "price": { "currency": "USD", "total": "441.00", "base": "399.00" },
+          "room": { "typeEstimated": { "category": "STANDARD_ROOM" } }
+        },
+        {
+          "id": "off1b",
+          "checkInDate": "2026-11-03",
+          "checkOutDate": "2026-11-06",
+          "price": { "currency": "USD", "total": "417.00" }
+        }
+      ]
+    },
+    {
+      "type": "hotel-offers",
+      "available": true,
+      "hotel": {
+        "hotelId": "ACNOCBD2",
+        "name": "AC HOTEL NEW ORLEANS BOURBON",
+        "cityCode": "MSY",
+        "latitude": 29.9539,
+        "longitude": -90.0685
+      },
+      "offers": [
+        {
+          "id": "off2a",
+          "checkInDate": "2026-11-03",
+          "checkOutDate": "2026-11-06",
+          "price": { "currency": "USD", "total": "384.00" }
+        }
+      ]
+    },
+    {
+      "type": "hotel-offers",
+      "available": false,
+      "hotel": {
+        "hotelId": "SOLDOUT3",
+        "name": "SOLD OUT INN",
+        "cityCode": "MSY"
+      },
+      "offers": []
+    }
+  ]
+}
